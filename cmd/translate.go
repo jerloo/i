@@ -26,7 +26,7 @@ import (
 // translateCmd represents the translate command
 var translateCmd = &cobra.Command{
 	Use:   "translate",
-	Short: "文本翻译工作",
+	Short: "文本翻译",
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) != 2 {
 			fmt.Println("必须制定需要翻译的文件路径和输出文件路径")
