@@ -26,6 +26,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var cpNight bool
+
 // cpCmd represents the cp command
 var cpCmd = &cobra.Command{
 	Use:   "cp",
@@ -40,6 +42,15 @@ var cpCmd = &cobra.Command{
 				"mipmap-xhdpi",
 				"mipmap-xxhdpi",
 				"mipmap-xxxhdpi",
+			}
+			if cpNight {
+				dirNames = []string{
+					"mipmap-mdpi-night",
+					"mipmap-hdpi-night",
+					"mipmap-xhdpi-night",
+					"mipmap-xxhdpi-night",
+					"mipmap-xxxhdpi-night",
+				}
 			}
 			// currentDir, _ := os.Getwd()
 			for _, item := range dirNames {
@@ -74,4 +85,6 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// cpCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+
+	cpCmd.Flags().BoolVar(&cpNight, "night", false, "是否是夜间模式资源 -night 结尾")
 }
