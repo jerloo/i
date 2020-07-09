@@ -19,7 +19,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/sgoby/opencc"
+	"github.com/jeremaihloo/opencc"
 	"github.com/spf13/cobra"
 )
 
@@ -34,14 +34,17 @@ var translateCmd = &cobra.Command{
 			cc, err := opencc.NewOpenCC("s2hk")
 			if err != nil {
 				fmt.Print(err)
+				return
 			}
 			inFile, err := os.Open(args[0])
 			if err != nil {
 				fmt.Print(err)
+				return
 			}
-			outFile, err := os.OpenFile(args[1], os.O_CREATE|os.O_APPEND, 0644)
+			outFile, err := os.OpenFile(args[1], os.O_CREATE|os.O_WRONLY, 0644)
 			if err != nil {
-				fmt.Print(err)
+				fmt.Printf("打开输出文件错误 %v", err)
+				return
 			}
 			err = cc.ConvertFile(inFile, outFile)
 			if err != nil {
