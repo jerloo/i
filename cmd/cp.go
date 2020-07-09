@@ -43,15 +43,6 @@ var cpCmd = &cobra.Command{
 				"mipmap-xxhdpi",
 				"mipmap-xxxhdpi",
 			}
-			if cpNight {
-				dirNames = []string{
-					"mipmap-mdpi-night",
-					"mipmap-hdpi-night",
-					"mipmap-xhdpi-night",
-					"mipmap-xxhdpi-night",
-					"mipmap-xxxhdpi-night",
-				}
-			}
 			// currentDir, _ := os.Getwd()
 			for _, item := range dirNames {
 				srcAbs, _ := filepath.Abs(filepath.Join(args[0], item))
@@ -60,6 +51,9 @@ var cpCmd = &cobra.Command{
 				for _, file := range files {
 					srcfp := path.Join(srcAbs, file.Name())
 					dstfp := path.Join(dstAbs, file.Name())
+					if cpNight {
+						dstfp = path.Join(dstAbs, file.Name())
+					}
 					cmd := exec.Command("cp", srcfp, dstfp)
 					cmd.Stdout = os.Stdout
 					cmd.Stderr = os.Stderr
