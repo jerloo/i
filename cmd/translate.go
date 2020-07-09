@@ -31,7 +31,7 @@ var translateCmd = &cobra.Command{
 		if len(args) != 2 {
 			fmt.Println("必须制定需要翻译的文件路径和输出文件路径")
 		} else {
-			cc, err := opencc.NewOpenCC("s2t")
+			cc, err := opencc.NewOpenCC("s2hk")
 			if err != nil {
 				fmt.Print(err)
 			}
