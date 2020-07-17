@@ -5,25 +5,23 @@ info:
   repository_url: https://github.com/jeremaihloo/icode
 options:
   commits:
-    filters:
-      Type:
-        - Add
-        - Update
-        - Fix
-        - Perf
-        - Refactor
+    # filters:
+    #   Type:
+    #     - feat
+    #     - fix
+    #     - perf
+    #     - refactor
   commit_groups:
-    title_maps:
-      Add: Add Features
-      Update: Update
-      Fix: Bug Fixes
-      Perf: Performance Improvements
-      Refactor: Code Refactoring
+    # title_maps:
+    #   feat: Features
+    #   fix: Bug Fixes
+    #   perf: Performance Improvements
+    #   refactor: Code Refactoring
   header:
-    pattern: "^(\\w*)(.*)$"
+    pattern: "^((\\w+)\\s.*)$"
     pattern_maps:
-      - Type
       - Subject
+      - Type
   notes:
     keywords:
       - BREAKING CHANGE
