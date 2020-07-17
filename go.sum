@@ -49,6 +49,8 @@ github.com/jeremaihloo/opencc v0.0.0-20200709032627-f443a94eff25 h1:Z2d8UWtMpfZC
 github.com/jeremaihloo/opencc v0.0.0-20200709032627-f443a94eff25/go.mod h1:KDhH5ee3lk3p/Q/Ywdz3sz8WI4Lbh5G6+kW7vwNzZjQ=
 github.com/jeremaihloo/opencc v0.0.0-20200709071249-330f4cd7894f h1:6pwuqI1LglrQkD/j6rtTqKksH3UOyHcJJIL/ZXBj8F8=
 github.com/jeremaihloo/opencc v0.0.0-20200709071249-330f4cd7894f/go.mod h1:KDhH5ee3lk3p/Q/Ywdz3sz8WI4Lbh5G6+kW7vwNzZjQ=
+github.com/jeremaihloo/opencc v1.0.0 h1:L8caDd4UzyYYgvf6vwYfZmt7hLj3UAlhY7i6IbFdf/8=
+github.com/jeremaihloo/opencc v1.0.0/go.mod h1:KDhH5ee3lk3p/Q/Ywdz3sz8WI4Lbh5G6+kW7vwNzZjQ=
 github.com/jonboulle/clockwork v0.1.0/go.mod h1:Ii8DK3G1RaLaWxj9trq07+26W01tbo22gdxWY5EU2bo=
 github.com/jtolds/gls v4.20.0+incompatible h1:xdiiI2gbIgH/gLH7ADydsJ1uDOEzR8yvV7C0MuV77Wo=
 github.com/jtolds/gls v4.20.0+incompatible/go.mod h1:QJZ7F/aHp+rZTRtaJ1ow/lLfFfVYBRgL+9YlvaHOwJU=
