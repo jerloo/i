@@ -15,7 +15,7 @@ limitations under the License.
 */
 package main
 
-import "github.com/jeremaihloo/icode/cmd"
+import "github.com/jerloo/i/cmd"
 
 func main() {
 	cmd.Execute()

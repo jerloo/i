@@ -27,5 +27,5 @@
 - Init commit
 
 
-[Unreleased]: https://github.com/jeremaihloo/icode/compare/v0.0.2...HEAD
-[v0.0.2]: https://github.com/jeremaihloo/icode/compare/v0.0.1...v0.0.2
+[Unreleased]: https://github.com/jerloo/i/compare/v0.0.2...HEAD
+[v0.0.2]: https://github.com/jerloo/i/compare/v0.0.1...v0.0.2

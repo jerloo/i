@@ -1,11 +1,11 @@
-# icode
+# i
 
 > 个人编程常用脚本
 
 ## Installation
 
 ```console
-go get github.com/jeremaihloo/icode
+go get github.com/jerloo/i
 ```
 
 ## Usage
@@ -14,7 +14,7 @@ go get github.com/jeremaihloo/icode
 一个全干码农常用的命令行工具.
 
 Usage:
-  icode [command]
+  i [command]
 
 Available Commands:
   android     安卓开发
@@ -22,10 +22,10 @@ Available Commands:
   translate   文本翻译
 
 Flags:
-      --config string   config file (default is $HOME/.icode.yaml)
-  -h, --help            help for icode
+      --config string   config file (default is $HOME/.i.yaml)
+  -h, --help            help for i
   -t, --toggle          Help message for toggle
 
-Use "icode [command] --help" for more information about a command.
+Use "i [command] --help" for more information about a command.
 subcommand is required
 ```

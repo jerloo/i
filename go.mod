@@ -1,4 +1,4 @@
-module github.com/jeremaihloo/icode
+module github.com/jerloo/i
 
 go 1.13
 

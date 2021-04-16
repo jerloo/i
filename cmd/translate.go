@@ -19,7 +19,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/jeremaihloo/opencc"
+	"github.com/jerloo/opencc"
 	"github.com/spf13/cobra"
 )
 
