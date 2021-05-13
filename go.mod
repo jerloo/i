@@ -3,6 +3,8 @@ module github.com/jerloo/i
 go 1.13
 
 require (
+	github.com/fatih/color v1.10.0 // indirect
+	github.com/go-git/go-git/v5 v5.3.0 // indirect
 	github.com/jeremaihloo/opencc v1.0.0
 	github.com/mitchellh/go-homedir v1.1.0
 	github.com/spf13/cobra v0.0.6
