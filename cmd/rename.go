@@ -19,48 +19,41 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func isDeleteName(name string, names []string) bool {
-	for _, item := range names {
-		if name == item {
-			return true
-		}
-	}
-	return false
-}
+var reposRenameOld string
+var reposRenameNew string
 
-// removeCmd represents the remove command
-var removeCmd = &cobra.Command{
-	Use:   "remove",
-	Short: "移除仓库",
+// renameCmd represents the rename command
+var renameCmd = &cobra.Command{
+	Use:   "rename",
+	Short: "重命名仓库",
 	Run: func(cmd *cobra.Command, args []string) {
-		if len(args) == 0 {
-			Warning("请指定仓库名称")
+		if len(args) != 2 {
+			Warning("参数不正确")
 			return
 		}
-		var newRepos []*Repo
+		reposRenameOld = args[0]
+		reposRenameNew = args[1]
 		storage := GetRepoStorage()
 		for _, item := range storage.Repos {
-			if !isDeleteName(item.Name, args) {
-				newRepos = append(newRepos, item)
+			if item.Name == reposRenameOld {
+				item.Name = reposRenameNew
 			}
 		}
-
-		storage.Repos = newRepos
 		err := storage.Save()
 		CheckIfError(err)
 	},
 }
 
 func init() {
-	reposCmd.AddCommand(removeCmd)
+	reposCmd.AddCommand(renameCmd)
 
 	// Here you will define your flags and configuration settings.
 
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
-	// removeCmd.PersistentFlags().String("foo", "", "A help for foo")
+	// renameCmd.PersistentFlags().String("foo", "", "A help for foo")
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	// removeCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	// renameCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }

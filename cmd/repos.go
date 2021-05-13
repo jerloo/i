@@ -16,16 +16,71 @@ limitations under the License.
 package cmd
 
 import (
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
+	"os"
+	"path"
 	"time"
 
+	uuid "github.com/satori/go.uuid"
 	"github.com/spf13/cobra"
 )
 
 type Repo struct {
-	ID        string
-	Name      string
-	CreatedAt time.Time
+	ID          string
+	Name        string
+	Description string
+	Address     string
+	Path        string
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
+}
+
+type RepoStorage struct {
+	ID          string
+	Version     int
+	Description string
+	Repos       []*Repo
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
+}
+
+func (rs *RepoStorage) Save() error {
+	rs.UpdatedAt = time.Now()
+
+	bts, err := json.MarshalIndent(rs, "", "    ")
+	if err != nil {
+		return err
+	}
+	homedir, err := os.UserHomeDir()
+	storagePath := path.Join(homedir, ".repos.json")
+	CheckIfError(err)
+	return ioutil.WriteFile(storagePath, bts, 0644)
+}
+
+func GetRepoStorage() *RepoStorage {
+	homedir, err := os.UserHomeDir()
+	CheckIfError(err)
+
+	storage := &RepoStorage{
+		ID:          uuid.NewV4().String(),
+		Version:     1,
+		Description: "我到仓库",
+		CreatedAt:   time.Now(),
+		UpdatedAt:   time.Now(),
+	}
+
+	storagePath := path.Join(homedir, ".repos.json")
+	_, err = os.Stat(storagePath)
+	if err == nil {
+		bts, err := ioutil.ReadFile(storagePath)
+		CheckIfError(err)
+		err = json.Unmarshal(bts, &storage)
+		CheckIfError(err)
+	}
+
+	return storage
 }
 
 // reposCmd represents the repos command
@@ -33,7 +88,13 @@ var reposCmd = &cobra.Command{
 	Use:   "repos",
 	Short: "仓库管理",
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("repos called")
+		storage := GetRepoStorage()
+		for index, item := range storage.Repos {
+			Info(fmt.Sprintf("%d. %s", index, item.Name))
+		}
+		if len(storage.Repos) == 0 {
+			Info("当前没有仓库")
+		}
 	},
 }
 
