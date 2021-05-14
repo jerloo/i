@@ -37,6 +37,10 @@ func PrintObject(obj interface{}) {
 }
 
 func RealPathToStoragePath(dirpath string) string {
+	if !path.IsAbs(dirpath) {
+		wd, _ := os.Getwd()
+		dirpath = path.Join(wd, dirpath)
+	}
 	homedir, err := os.UserHomeDir()
 	CheckIfError(err)
 	return strings.ReplaceAll(dirpath, homedir, "~")

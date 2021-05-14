@@ -21,7 +21,6 @@ import (
 	"io/ioutil"
 	"os"
 	"path"
-	"strings"
 	"time"
 
 	uuid "github.com/satori/go.uuid"
@@ -110,10 +109,11 @@ var reposCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		storage := GetRepoStorage()
 		for _, item := range storage.Repos {
-			Info(fmt.Sprintf("%s %s", strings.Split(item.ID, "-")[0], item.Name))
-		}
-		if len(storage.Repos) == 0 {
-			Info("当前没有仓库")
+			if IfRepoIsClean(StoragePathToRealPath(item.Path)) {
+				Info(item.Name)
+			} else {
+				Warning(item.Name)
+			}
 		}
 	},
 }
