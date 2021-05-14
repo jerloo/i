@@ -16,20 +16,18 @@ limitations under the License.
 package cmd
 
 import (
+	"fmt"
 	"os"
 	"path"
 	"strings"
-	"time"
 
 	"github.com/go-git/go-git/v5"
 	"github.com/hokaccha/go-prettyjson"
-	uuid "github.com/satori/go.uuid"
 	"github.com/spf13/cobra"
 )
 
 var reposAddName string
 var reposAddPath string
-var reposAddAddress string
 var reposAddDesc string
 
 func PrintObject(obj interface{}) {
@@ -50,51 +48,89 @@ func StoragePathToRealPath(storagePath string) string {
 	return strings.ReplaceAll(storagePath, "~", homedir)
 }
 
+func NewRepo(name, dirpath, desc string) (*Repo, error) {
+	r, err := git.PlainOpen(dirpath)
+	if err != nil {
+		return nil, err
+	}
+	remotes, err := r.Remotes()
+	CheckIfError(err)
+	if len(remotes) == 0 {
+		return nil, fmt.Errorf("远程仓库不能为空")
+	}
+	reposAddPath = RealPathToStoragePath(dirpath)
+	reposAddName = path.Base(dirpath)
+
+	repo := &Repo{
+		Name:        reposAddName,
+		Path:        reposAddPath,
+		Description: desc,
+	}
+	whitelist := []string{"github.com", "coding.net"}
+	for _, remote := range remotes {
+		flag := false
+		for _, white := range whitelist {
+			containsAuthor := strings.Contains(remote.Config().URLs[0], "jeremaihloo") || strings.Contains(remote.Config().URLs[0], "jerloo")
+			if strings.Contains(remote.Config().URLs[0], white) && containsAuthor {
+				flag = true
+			}
+		}
+
+		if flag {
+			head, _ := r.Head()
+			rr := &RepoRemote{
+				Name:          remote.Config().Name,
+				Address:       remote.Config().URLs[0],
+				CurrentBranch: head.Name().Short(),
+			}
+			repo.Remotes = append(repo.Remotes, rr)
+		} else {
+			return nil, fmt.Errorf("不得添加除白名单意外的仓库地址")
+		}
+	}
+	return repo, nil
+}
+
 // addCmd represents the add command
 var addCmd = &cobra.Command{
 	Use:   "add",
 	Short: "添加仓库到配置文件",
 	Run: func(cmd *cobra.Command, args []string) {
-		if len(args) != 0 && args[0] == "." {
-			wd, err := os.Getwd()
-			CheckIfError(err)
-			reposAddPath = RealPathToStoragePath(wd)
-			reposAddName = path.Base(wd)
-			r, err := git.PlainOpen(wd)
-			CheckIfError(err)
-			remotes, err := r.Remotes()
-			CheckIfError(err)
-			if len(remotes) == 0 {
-				Warning("远程仓库不能为空")
-				return
-			}
-			reposAddAddress = remotes[0].Config().URLs[0]
-		}
-
-		if reposAddName == "" || reposAddPath == "" || reposAddAddress == "" {
-			Warning("参数不能为空")
-			return
-		}
 		storage := GetRepoStorage()
 
-		for _, item := range storage.Repos {
-			if item.Name == reposAddName || item.Path == reposAddPath || item.Address == reposAddAddress {
-				Warning("已经存在相同仓库")
-				PrintObject(item)
-				return
+		if len(args) == 0 {
+			Warning("需要指定添加目录")
+			return
+		}
+
+		workdir := args[0]
+
+		_, err := git.PlainOpen(workdir)
+		if err == nil {
+			repo, err := NewRepo(path.Base(workdir), workdir, reposAddDesc)
+			CheckIfError(err)
+			storage.Add(repo)
+			return
+		}
+
+		dirs, err := os.ReadDir(workdir)
+		CheckIfError(err)
+		for _, item := range dirs {
+			if item.IsDir() {
+				dirPath := path.Join(workdir, item.Name())
+				repo, err := NewRepo(item.Name(), dirPath, "")
+				if err == nil {
+					err = storage.Add(repo)
+					if err != nil {
+						Warning("忽略 %s %s", dirPath, err.Error())
+					} else {
+						Info("Added %s", dirPath)
+					}
+				} else {
+					Warning("忽略 %s", dirPath)
+				}
 			}
 		}
-		newRepo := &Repo{
-			ID:        uuid.NewV4().String(),
-			Name:      reposAddName,
-			Path:      reposAddPath,
-			Address:   reposAddAddress,
-			CreatedAt: time.Now(),
-			UpdatedAt: time.Now(),
-		}
-		storage.Repos = append(storage.Repos, newRepo)
-		err := storage.Save()
-		CheckIfError(err)
 	},
 }
 
@@ -113,6 +149,5 @@ func init() {
 
 	addCmd.Flags().StringVar(&reposAddName, "name", "", "repo name")
 	addCmd.Flags().StringVar(&reposAddPath, "path", "", "repo path")
-	addCmd.Flags().StringVar(&reposAddAddress, "address", "", "repo address")
 	addCmd.Flags().StringVar(&reposAddDesc, "description", "", "repo description")
 }

@@ -55,10 +55,6 @@ var configCmd = &cobra.Command{
 			repo.Description = reposConfigDesc
 			flag = true
 		}
-		if reposConfigAddress != "" {
-			repo.Address = reposConfigAddress
-			flag = true
-		}
 		if flag {
 			repo.UpdatedAt = time.Now()
 			err := storage.Save()

@@ -21,6 +21,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path"
+	"strings"
 	"time"
 
 	uuid "github.com/satori/go.uuid"
@@ -31,10 +32,16 @@ type Repo struct {
 	ID          string
 	Name        string
 	Description string
-	Address     string
+	Remotes     []*RepoRemote
 	Path        string
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
+}
+
+type RepoRemote struct {
+	Name          string
+	Address       string
+	CurrentBranch string
 }
 
 type RepoStorage struct {
@@ -44,6 +51,19 @@ type RepoStorage struct {
 	Repos       []*Repo
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
+}
+
+func (rs *RepoStorage) Add(repo *Repo) error {
+	for _, item := range rs.Repos {
+		if item.Name == repo.Name || item.Path == repo.Path {
+			return fmt.Errorf("已经存在相同仓库")
+		}
+	}
+	repo.ID = uuid.NewV4().String()
+	repo.CreatedAt = time.Now()
+	repo.UpdatedAt = time.Now()
+	rs.Repos = append(rs.Repos, repo)
+	return rs.Save()
 }
 
 func (rs *RepoStorage) Save() error {
@@ -66,7 +86,7 @@ func GetRepoStorage() *RepoStorage {
 	storage := &RepoStorage{
 		ID:          uuid.NewV4().String(),
 		Version:     1,
-		Description: "我到仓库",
+		Description: "我的仓库",
 		CreatedAt:   time.Now(),
 		UpdatedAt:   time.Now(),
 	}
@@ -89,8 +109,8 @@ var reposCmd = &cobra.Command{
 	Short: "仓库管理",
 	Run: func(cmd *cobra.Command, args []string) {
 		storage := GetRepoStorage()
-		for index, item := range storage.Repos {
-			Info(fmt.Sprintf("%d. %s", index, item.Name))
+		for _, item := range storage.Repos {
+			Info(fmt.Sprintf("%s %s", strings.Split(item.ID, "-")[0], item.Name))
 		}
 		if len(storage.Repos) == 0 {
 			Info("当前没有仓库")
